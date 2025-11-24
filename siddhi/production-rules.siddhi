@@ -1,0 +1,22 @@
+@App:name("LLOYD-Production")
+@App:description("LLOYD Defense Rules")
+
+@source(type='kafka', topic='iot-events', bootstrap.servers='kafka:9092', threading.option='single.thread', group.id='siddhi-group', @map(type='json'))
+define stream PacketStream (ts double, src_ip string, dst_port int, proto string, len long, payload string);
+
+@sink(type='kafka', topic='kill-commands', bootstrap.servers='kafka:9092', @map(type='json'))
+define stream KillSink (ip string, action string, reason string);
+
+@info(name = 'Detect-MQTT-Brute')
+from PacketStream[dst_port == 1883]#window.time(10 sec)
+select src_ip, count() as attempts
+group by src_ip
+having attempts > 10
+insert into PotentialBruteForce;
+
+@info(name = 'Rate-Limit-Bans')
+from PotentialBruteForce#window.time(1 min)
+select src_ip as ip, 'BAN' as action, 'MQTT_Brute_Force_Behavior' as reason
+group by ip
+having count() == 1
+insert into KillSink;

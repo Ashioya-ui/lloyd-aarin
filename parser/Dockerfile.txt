@@ -1,0 +1,16 @@
+FROM rust:1.77-bookworm as builder
+RUN apt-get update && apt-get install -y llvm clang libelf-dev zlib1g-dev pkg-config libssl-dev git gcc-multilib python3
+RUN rustup toolchain install nightly && rustup component add rust-src --toolchain nightly && rustup default nightly
+RUN cargo install bpf-linker
+WORKDIR /usr/src/lloyd
+COPY . .
+WORKDIR /usr/src/lloyd/xdp-prog
+RUN cargo build --release
+WORKDIR /usr/src/lloyd/lloyd-node
+RUN cargo build --release
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates libssl3 libelf1 mosquitto-clients && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /usr/src/lloyd/target/release/lloyd-node /usr/local/bin/lloyd-node
+COPY --from=builder /usr/src/lloyd/target/bpfel-unknown-none/release/xdp-prog /opt/xdp-prog
+CMD ["lloyd-node", "--bpf-path", "/opt/xdp-prog"]
