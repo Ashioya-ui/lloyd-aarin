@@ -1,25 +1,18 @@
-LLOYD AARIN Defence Systems
+# LLOYD-AARIN: Neuro-Symbolic Kinetic Interdiction
+**AI Hackathon 2025 Submission**
 
-Neuro-Symbolic Kinetic Interdiction for Critical Infrastructure.
+## Abstract
+Lloyd-Aarin closes the "Interdiction Gap" in Critical Infrastructure security. It combines:
+1. **System 1 (Reflex):** eBPF/XDP for microsecond packet dropping.
+2. **System 2 (Brain):** PyTorch Autoencoder for zero-day detection.
+3. **Swarm:** UDP Gossip protocol for distributed immunity.
 
-Contact: waa6673@nyu.edu
+## Architecture
+- **Kernel:** Rust + Aya (XDP)
+- **AI:** Python + PyTorch
+- **Bus:** Apache Kafka
+- **Swarm:** UDP Multicast
 
-LLOYD Aarin combines the speed of Kernel-level interdiction (eBPF XDP) with the adaptability of Deep Learning (PyTorch Autoencoders) to detect and block Zero-Day IoT attacks in <800ms.
-
-🏗 Architecture
-
-System 1 (Reflex): Rust + eBPF XDP Sensor.
-
-System 2 (Cognitive): PyTorch "Chimera" Neural Network.
-
-Nervous System: Kafka Message Bus.
-
-Muscle: Kinetic Interdiction via BPF HashMaps.
-
-🚀 Deployment
-
-docker compose up --build -d
-
-Verify System 1: docker compose logs -f lloyd-parser
-
-Verify System 2: docker compose logs -f chimera
+## Usage
+1. Run Gateway: `cargo run --bin gateway`
+2. Run AI: `docker run lloyd-brain`
