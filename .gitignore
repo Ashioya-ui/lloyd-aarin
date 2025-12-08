@@ -1,1 +1,19 @@
-target/**/*.rs.bk.env.docker/.DS_Storechimera-data/
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+env/
+chimera_brain.pth
+
+# Rust
+target/
+**/*.rs.bk
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Backup
+_legacy_backup/
